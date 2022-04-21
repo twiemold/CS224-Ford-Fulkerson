@@ -33,7 +33,8 @@ public class Main {
     G.print();
     G.checkFlow(n1, n4);
 
-    G.maxFlow(n1, n4);
+    int flow = G.maxFlow(n1, n4);
+    System.out.printf("Max flow is %s\n", flow);
     G.print();
   } // testOne()
 

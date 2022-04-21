@@ -159,7 +159,16 @@ public class Graph {
 
   public boolean checkFlow(Node s, Node t) {
     // check that flow out of s == flow into t
-    // check conservation condition at each internal node
+
+    boolean goodFlow = true;
+    for (Node n : nodes) {
+      for (Edge e : n.adjlist) {
+      // check conservation condition at each internal node
+        System.out.println(e.toString());
+      }
+    }
+
+    return goodFlow;
 
     // implement this
   } // checkFlow()
@@ -168,17 +177,44 @@ public class Graph {
 
   private void constructResidualGraph(int delta) {
     // implement this
+
+    // add backward edges
+    // clear existing edges
+    for (Node n : nodes) {
+      n.adjlistResid.clear();
+    }
+
+    for (Node n : nodes) {
+      for (Edge e : n.adjlist) {
+        if (e.capacity > e.flow) {
+          int forwardFlow = e.capacity - e.flow;
+          Edge forwardEdge = new Edge(e.n1, e.n2, forwardFlow, forwardFlow);
+          n.adjlistResid.add(forwardEdge);
+        }
+        if (e.flow > 0) {
+          int backwardCapacity = e.flow;
+          this.addResidualEdge(e.n1, e.n2, backwardCapacity,true);
+        }
+      }
+    }
+
   } // constructResidualGraph()
 
   //=========================================================
 
   private int findBottleneck(ArrayList<Edge> path) {
-    // implement this
+    int bottleneck = -1;
+    for (Edge e : path) {
+      if (e.flow < bottleneck) {
+        bottleneck = e.flow;
+      }
+    }
+    return bottleneck;
   } // findBottleneck()
 
   //=========================================================
 
-  private void augment(ArrayList<Edge> path) {
+  private void augment(ArrayList<Edge> path, int bottleneck) {
     // implement this
   } // augment()
 
@@ -186,6 +222,27 @@ public class Graph {
 
   public int maxFlow(Node s, Node t) {
     // implement this
+    // the thing
+
+    // 1. construct resid graph
+    this.constructResidualGraph(0);
+    // 2. find a path from source to sink
+    ArrayList<Edge> path = findPathInResid(s, t);
+    while (!(path.isEmpty())) {
+      // 3. find bottleneck on path from 2
+      int bottleneck = findBottleneck(path);
+      // 4. augment the flow on that bottleneck
+      // TODO: Bottleneck returns int?
+      augment(path, bottleneck);
+      this.constructResidualGraph(bottleneck);
+      path = findPathInResid(s, t);
+    }
+    // 5. done when no path from source to sink on resid
+
+    int flow = 0;
+    for (Edge e : s.adjlist) {
+      flow += e.flow;
+    }
 
     System.out.println("max flow is " + flow);
 
