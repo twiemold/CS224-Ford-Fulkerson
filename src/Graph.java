@@ -221,22 +221,18 @@ public class Graph {
     for (Edge eResid : path) {
       if (!(eResid.backward)) {
         // get node in graph and increase e.flow
-        for (Node n : nodes) {
-          for (Edge eGraph : n.adjlist) {
+        for (Edge eGraph : eResid.n1.adjlist) {
             if (eGraph.n1 == eResid.n1 && eGraph.n2 == eResid.n2) {
               eGraph.flow += bottleneck;
             }
           }
-        }
       } else {
-        for (Node n : nodes) {
-          for (Edge eGraph : n.adjlist) {
+        for (Edge eGraph : eResid.n1.adjlist) {
             if (eGraph.n1 == eResid.n1 && eGraph.n2 == eResid.n2) {
               eGraph.flow -= bottleneck;
             }
           }
         }
-      }
     }
   } // augment()
 
