@@ -175,7 +175,7 @@ public class Graph {
 
   //=========================================================
 
-  private void constructResidualGraph(int delta) {
+  private void constructResidualGraph() {
     // implement this
 
     // add backward edges
@@ -193,7 +193,7 @@ public class Graph {
         }
         if (e.flow > 0) {
           int backwardCapacity = e.flow;
-          this.addResidualEdge(e.n1, e.n2, backwardCapacity,true);
+          this.addResidualEdge(e.n2, e.n1, backwardCapacity,true);
         }
       }
     }
@@ -203,10 +203,12 @@ public class Graph {
   //=========================================================
 
   private int findBottleneck(ArrayList<Edge> path) {
-    int bottleneck = -1;
+    int bottleneck = 500;
     for (Edge e : path) {
-      if (e.flow < bottleneck) {
-        bottleneck = e.flow;
+      if (!(e.backward)) {
+        if (e.capacity < bottleneck) {
+          bottleneck = e.capacity;
+        }
       }
     }
     return bottleneck;
@@ -214,8 +216,29 @@ public class Graph {
 
   //=========================================================
 
-  private void augment(ArrayList<Edge> path, int bottleneck) {
-    // implement this
+  private void augment(ArrayList<Edge> path) {
+    // Update to match textbook
+    int bottleneck = findBottleneck(path);
+    for (Edge eResid : path) {
+      if (!(eResid.backward)) {
+        // get node in graph and increase e.flow
+        for (Node n : nodes) {
+          for (Edge eGraph : n.adjlist) {
+            if (eGraph.n1 == eResid.n1 && eGraph.n2 == eResid.n2) {
+              eGraph.flow += bottleneck;
+            }
+          }
+        }
+      } else {
+        for (Node n : nodes) {
+          for (Edge eGraph : n.adjlist) {
+            if (eGraph.n1 == eResid.n1 && eGraph.n2 == eResid.n2) {
+              eGraph.flow -= bottleneck;
+            }
+          }
+        }
+      }
+    }
   } // augment()
 
   //=========================================================
@@ -225,16 +248,14 @@ public class Graph {
     // the thing
 
     // 1. construct resid graph
-    this.constructResidualGraph(0);
+    this.constructResidualGraph();
     // 2. find a path from source to sink
     ArrayList<Edge> path = findPathInResid(s, t);
     while (!(path.isEmpty())) {
-      // 3. find bottleneck on path from 2
-      int bottleneck = findBottleneck(path);
-      // 4. augment the flow on that bottleneck
-      // TODO: Bottleneck returns int?
-      augment(path, bottleneck);
-      this.constructResidualGraph(bottleneck);
+      // update augment to match textbook
+      augment(path);
+      // update graph with flow from augment
+      this.constructResidualGraph();
       path = findPathInResid(s, t);
     }
     // 5. done when no path from source to sink on resid
