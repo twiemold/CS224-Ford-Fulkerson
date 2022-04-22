@@ -1,10 +1,16 @@
-// CS224 Spring 2022
-// jdh 4/9/22
+/**
+ * Thomas Wiemold
+ * 4/22/2022
+ * CS224
+ * Programming Assignment #6
+ * Ford-Fulkerson
+ * Main.java from Jason Hibbeler
+ */
 
 public class Main {
   public static void main(String args[]) {
-    // testOne();
-  testTwo();
+     // testOne();
+     testTwo();
   }
 
   //============================================================

@@ -1,5 +1,11 @@
-// CS224 Spring 2022
-// jdh 4/9/22
+/**
+ * Thomas Wiemold
+ * 4/22/2022
+ * CS224
+ * Programming Assignment #6
+ * Ford-Fulkerson
+ * Graph.java implements Ford-Fulkerson
+ */
 
 import java.util.ArrayList;
 import java.util.Queue;
@@ -167,19 +173,12 @@ public class Graph {
         System.out.println(e.toString());
       }
     }
-
     return goodFlow;
-
-    // implement this
   } // checkFlow()
 
   //=========================================================
 
   private void constructResidualGraph() {
-    // implement this
-
-    // add backward edges
-    // clear existing edges
     for (Node n : nodes) {
       n.adjlistResid.clear();
     }
@@ -216,11 +215,9 @@ public class Graph {
   //=========================================================
 
   private void augment(ArrayList<Edge> path) {
-    // Update to match textbook
     int bottleneck = findBottleneck(path);
     for (Edge eResid : path) {
       if (!(eResid.backward)) {
-        // get node in graph and increase e.flow
         for (Edge eGraph : eResid.n1.adjlist) {
             if (eGraph.n1 == eResid.n1 && eGraph.n2 == eResid.n2) {
               eGraph.flow += bottleneck;
@@ -239,21 +236,14 @@ public class Graph {
   //=========================================================
 
   public int maxFlow(Node s, Node t) {
-    // implement this
-    // the thing
-
-    // 1. construct resid graph
     this.constructResidualGraph();
-    // 2. find a path from source to sink
     ArrayList<Edge> path = findPathInResid(s, t);
     while (!(path.isEmpty())) {
       // update augment to match textbook
       augment(path);
-      // update graph with flow from augment
       this.constructResidualGraph();
       path = findPathInResid(s, t);
     }
-    // 5. done when no path from source to sink on resid
 
     int flow = 0;
     for (Edge e : s.adjlist) {
