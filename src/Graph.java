@@ -188,12 +188,11 @@ public class Graph {
       for (Edge e : n.adjlist) {
         if (e.capacity > e.flow) {
           int forwardFlow = e.capacity - e.flow;
-          Edge forwardEdge = new Edge(e.n1, e.n2, forwardFlow, forwardFlow);
-          n.adjlistResid.add(forwardEdge);
+          this.addResidualEdge(e.n1, e.n2, forwardFlow, false);
         }
         if (e.flow > 0) {
           int backwardCapacity = e.flow;
-          this.addResidualEdge(e.n2, e.n1, backwardCapacity,true);
+          this.addResidualEdge(e.n2, e.n1, backwardCapacity, true);
         }
       }
     }
