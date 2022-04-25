@@ -9,8 +9,8 @@
 
 public class Main {
   public static void main(String args[]) {
-     // testOne();
-     testTwo();
+      testOne();
+     // testTwo();
   }
 
   //============================================================

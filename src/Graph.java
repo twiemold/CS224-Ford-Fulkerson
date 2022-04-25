@@ -167,10 +167,38 @@ public class Graph {
     // check that flow out of s == flow into t
 
     boolean goodFlow = true;
+    int sFlow = 0;
+    int tFlow = 0;
+
+    for (Edge e: s.adjlist) {
+      sFlow += e.flow;
+    }
+
+    for (Node n : nodes) {
+      for (Edge e: n.adjlist) {
+        if (e.n2.name == 4) {
+          tFlow += e.flow;
+        }
+      }
+    }
+
+
+    // this is failing because 4 has no edges
+    // could part of larger problem
+    if (sFlow != tFlow) {
+      System.out.println("Failed conservation condition root nodes");
+      goodFlow = false;
+      return goodFlow;
+    }
+
     for (Node n : nodes) {
       for (Edge e : n.adjlist) {
       // check conservation condition at each internal node
-        System.out.println(e.toString());
+        if (e.flow > e.capacity) {
+          System.out.printf("Failed conservation condition, edge between Node %s and Node %s", e.n1.name, e.n2.name);
+          goodFlow = false;
+          return goodFlow;
+        }
       }
     }
     return goodFlow;
@@ -203,10 +231,8 @@ public class Graph {
   private int findBottleneck(ArrayList<Edge> path) {
     int bottleneck = 500;
     for (Edge e : path) {
-      if (!(e.backward)) {
-        if (e.capacity < bottleneck) {
-          bottleneck = e.capacity;
-        }
+      if (e.capacity < bottleneck) {
+        bottleneck = e.capacity;
       }
     }
     return bottleneck;
@@ -219,13 +245,13 @@ public class Graph {
     for (Edge eResid : path) {
       if (!(eResid.backward)) {
         for (Edge eGraph : eResid.n1.adjlist) {
-            if (eGraph.n1 == eResid.n1 && eGraph.n2 == eResid.n2) {
+            if (eGraph.n1.name == eResid.n1.name && eGraph.n2.name == eResid.n2.name) {
               eGraph.flow += bottleneck;
             }
           }
       } else {
         for (Edge eGraph : eResid.n1.adjlist) {
-            if (eGraph.n1 == eResid.n1 && eGraph.n2 == eResid.n2) {
+            if (eGraph.n1.name == eResid.n1.name && eGraph.n2.name == eResid.n2.name) {
               eGraph.flow -= bottleneck;
             }
           }
@@ -236,11 +262,13 @@ public class Graph {
   //=========================================================
 
   public int maxFlow(Node s, Node t) {
+    boolean goodFlow;
     this.constructResidualGraph();
     ArrayList<Edge> path = findPathInResid(s, t);
     while (!(path.isEmpty())) {
-      // update augment to match textbook
       augment(path);
+      goodFlow = checkFlow(s, t);
+      if (!(goodFlow)) {return -1;}
       this.constructResidualGraph();
       path = findPathInResid(s, t);
     }
@@ -249,8 +277,6 @@ public class Graph {
     for (Edge e : s.adjlist) {
       flow += e.flow;
     }
-
-    System.out.println("max flow is " + flow);
 
     return flow;
   } // maxFlow()
