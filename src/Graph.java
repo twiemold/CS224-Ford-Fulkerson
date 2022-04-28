@@ -213,13 +213,13 @@ public class Graph {
 
     for (Node n : nodes) {
       for (Edge e : n.adjlist) {
+        if (e.flow > 0) {
+          int backwardCapacity = e.flow;
+          this.addResidualEdge(e.n1, e.n2, backwardCapacity, true);
+        }
         if (e.capacity > e.flow) {
           int forwardFlow = e.capacity - e.flow;
           this.addResidualEdge(e.n1, e.n2, forwardFlow, false);
-        }
-        if (e.flow > 0) {
-          int backwardCapacity = e.flow;
-          this.addResidualEdge(e.n2, e.n1, backwardCapacity, true);
         }
       }
     }
