@@ -176,15 +176,13 @@ public class Graph {
 
     for (Node n : nodes) {
       for (Edge e: n.adjlist) {
-        if (e.n2.name == 4) {
+        if (e.n2.name == t.name) {
           tFlow += e.flow;
         }
       }
     }
 
 
-    // this is failing because 4 has no edges
-    // could part of larger problem
     if (sFlow != tFlow) {
       System.out.println("Failed conservation condition root nodes");
       goodFlow = false;
@@ -215,7 +213,7 @@ public class Graph {
       for (Edge e : n.adjlist) {
         if (e.flow > 0) {
           int backwardCapacity = e.flow;
-          this.addResidualEdge(e.n1, e.n2, backwardCapacity, true);
+          this.addResidualEdge(e.n2, e.n1, backwardCapacity, true);
         }
         if (e.capacity > e.flow) {
           int forwardFlow = e.capacity - e.flow;

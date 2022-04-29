@@ -9,8 +9,8 @@
 
 public class Main {
   public static void main(String args[]) {
-    // testOne();
-     testTwo();
+    testOne();
+     //testTwo();
   }
 
   //============================================================
@@ -71,9 +71,9 @@ public class Main {
     G.addEdge(n4, n5, 10,  0);
 
     G.print();
-    G.checkFlow(n1, n5);
 
-    G.maxFlow(n1, n5);
+    int maxFlow = G.maxFlow(n1, n5);
+    System.out.printf("Max flow is: %d\n", maxFlow);
     G.print();
 
     G.checkFlow(n1, n5);
