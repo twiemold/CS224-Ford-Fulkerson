@@ -182,7 +182,6 @@ public class Graph {
       }
     }
 
-
     if (sFlow != tFlow) {
       System.out.println("Failed conservation condition root nodes");
       goodFlow = false;
@@ -249,7 +248,7 @@ public class Graph {
           }
       } else {
         for (Edge eGraph : eResid.n1.adjlist) {
-            if (eGraph.n1.name == eResid.n1.name && eGraph.n2.name == eResid.n2.name) {
+            if (eGraph.n1.name == eResid.n2.name && eGraph.n2.name == eResid.n1.name) {
               eGraph.flow -= bottleneck;
             }
           }
